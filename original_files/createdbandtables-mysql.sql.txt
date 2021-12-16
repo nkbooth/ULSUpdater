@@ -1,0 +1,1320 @@
+
+#   createdbandtables-mysql.sql
+#   mysql script to create the database and tables (for future data import)
+#   n6lhv@arrl.net (Wayne Smith)
+#   created:  8-August-2004
+#   updated:  24-November-2004
+
+#   this script is based on pa_ddef18.txt on the FCC ULS Database page
+#   A few (non material) changes must be made to pa_ddef17.txt
+#   for use as a DDL MySql script.  Those changes are as follows:
+
+#   remove the "go" words between each CREATE TABLE command
+#     (I believe that is for T-SQL environments, such as MS SQL Server)
+#   add a semi-colon (";") after closing CREATE TABLE command
+#   fix places where the the comma (",") is misplaced in the
+#     CREATE TABLE command
+#   change the keyword "smallinteger" to "smallint"
+#   change the keyword "tinyinteger" to "tinyint"
+#   change the keyword "money" to (for example) "numeric(20,4)"
+
+#   add a column to store the name of source file
+
+#   The default physical file format, MyISAM, is fine
+
+
+
+#   Display the MySQL version
+SELECT version();
+
+
+
+#   Manage the database
+DROP DATABASE IF EXISTS uls;
+
+CREATE DATABASE uls;
+
+USE uls
+
+
+
+#   Create all of the tables
+# A2 - Application (Additional Data)
+CREATE TABLE IF NOT EXISTS PUBACC_A2
+(
+      Record_Type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      ULS_File_Number           char(14)             null,
+      EBF_Number                varchar(30)          null,
+      spectrum_manager_leasing  char(1)              null,
+      defacto_transfer_leasing  char(1)              null,
+      new_spectrum_leasing      char(1)              null,
+      spectrum_subleasing       char(1)              null,
+      xfer_control_lessee       char(1)              null,
+      revision_spectrum_lease   char(1)              null,
+      assignment_spectrum_lease char(1)              null,
+      registered_link_action    char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+
+# AC - Aircraft
+CREATE TABLE IF NOT EXISTS PUBACC_AC
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      aircraft_count            integer              null,
+      type_of_carrier           char(1)              null,
+      portable_indicator        char(1)              null,
+      fleet_indicator           char(1)              null,
+      n_number                  char(10)             null,
+      db_id                     char(9)              not null
+);
+
+
+# AD - Application/Detail
+CREATE TABLE IF NOT EXISTS PUBACC_AD
+(
+      Record_Type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      ULS_File_Number           char(14)             null,
+      EBF_Number                varchar(30)          null,
+      Application_Purpose       char(2)              null,
+      Application_Status        char(1)              null,
+      Application_Fee_Exempt    char(1)              null,
+      Regulatory_Fee_Exempt     char(1)              null,
+      Source                    char(1)              null,
+      requested_expiration_date_mmdd char(4)         null,
+      Receipt_Date              char(10)             null,
+      Notification_Code         char(1)              null,
+      Notification_date         char(10)             null,
+      Expanding_Area_or_Contour char(1)              null,
+      Change_Type               char(1)              null,
+      Original_Application_Purpose char(2)           null,
+      Requesting_A_Waiver       char(1)              null,
+      How_Many_Waivers_Requested integer             null,
+      Any_Attachments           char(1)              null,
+      Number_of_Requested_SIDs  integer              null,
+      fee_control_num           char(16)             null,
+      date_entered              char(10)             null,
+      reason                    varchar(255)         null,
+      frequency_coordination_indicat char(1)         null,
+      emergency_sta             char(1)              null,
+      overall_change_type       char(1)              null,
+      slow_growth_ind           char(1)              null,
+      previous_waiver           char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+# AM - Amateur
+CREATE TABLE IF NOT EXISTS PUBACC_AM
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_num              char(14)             null,
+      ebf_number                varchar(30)          null,
+      callsign                  char(10)             null,
+      operator_class            char(1)              null,
+      group_code                char(1)              null,
+      region_code               tinyint              null,
+      trustee_callsign          char(10)             null,
+      trustee_indicator         char(1)              null,
+      physician_certification   char(1)              null,
+      ve_signature              char(1)              null,
+      systematic_callsign_change char(1)             null,
+      vanity_callsign_change    char(1)              null,
+      vanity_relationship       char(12)             null,
+      previous_callsign         char(10)             null,
+      previous_operator_class   char(1)              null,
+      trustee_name              varchar(50)          null,
+      db_id                     char(9)              not null
+);
+
+
+# AN - Antenna
+CREATE TABLE IF NOT EXISTS PUBACC_AN
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      antenna_action_performed  char(1)              null,
+      antenna_number            integer              null,
+      location_number           integer              null,
+      receive_zone_code         char(6)              null,
+      antenna_type_code         char(1)              null,
+      height_to_tip             numeric(5,1)         null,
+      height_to_center_raat     numeric(5,1)         null,
+      antenna_make              varchar(25)          null,
+      antenna_model             varchar(25)          null,
+      tilt                      numeric(3,1)         null,
+      polarization_code         char(5)              null,
+      beamwidth                 numeric(4,1)         null,
+      gain                      numeric(4,1)         null,
+      azimuth                   numeric(4,1)         null,
+      height_above_avg_terrain  numeric(5,1)         null,
+      diversity_height          numeric(5,1)         null,
+      diversity_gain            numeric(4,1)         null,
+      diversity_beam            numeric(4,1)         null,
+      reflector_height          numeric(5,1)         null,
+      reflector_width           numeric(4,1)         null,
+      reflector_separation      numeric(5,1)         null,
+      repeater_seq_num          integer              null,
+      back_to_back_tx_dish_gain numeric(4,1)         null,
+      back_to_back_rx_dish_gain numeric(4,1)         null,
+      location_name             varchar(20)          null,
+      passive_repeater_id       integer              null,
+      alternative_cgsa_method   char(1)              null,
+      path_number               integer              null,
+      line_loss                 numeric(3,1)         null,
+      db_id                     char(9)              not null
+);
+
+
+# AS - Associated Callsign
+CREATE TABLE IF NOT EXISTS PUBACC_AS
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      callsign                  char(10)             null,
+      assoc_callsign            char(10)             null,
+      db_id                     char(9)              not null
+);
+
+
+# AT - Attachments
+CREATE TABLE IF NOT EXISTS PUBACC_AT
+(
+      Record_Type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      ULS_File_Number           char(14)             null,
+      EBF_Number                varchar(30)          null,
+      Attachment_Code           char(1)              null,
+      Attachment_Description    varchar(60)          null,
+      Attachment_Date           char(10)             null,
+      attachment_file_name      varchar(60)          null,
+      attachment_action_performed char(1)            null,
+      db_id                     char(9)              not null
+);
+
+
+# BC - Broadcast Callsign
+CREATE TABLE IF NOT EXISTS PUBACC_BC
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      callsign                  char(10)             null,
+      broadcast_callsign        char(10)             null,
+      broadcast_city            char(20)             null,
+      broadcast_state           char(2)              null,
+      parent_facility_id        integer              null,
+      parent_class_code         char(2)              null,
+      nonparent_type_code       char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+# BF - Buildout Frequency
+CREATE TABLE IF NOT EXISTS PUBACC_BF
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      call_sign                 char(10)             null,
+      location_number           integer              null,
+      antenna_number            integer              null,
+      frequency_assigned        numeric(16,8)        null,
+      buildout_code             integer              null,
+      buildout_deadline         char(10)             null,
+      buildout_date             char(10)             null,
+      db_id                     char(9)              not null
+);
+
+
+# BL - Buildout Location
+CREATE TABLE IF NOT EXISTS PUBACC_BL
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      call_sign                 char(10)             null,
+      location                  integer              null,
+      buildout_code             integer              null,
+      buildout_deadline         char(10)             null,
+      buildout_date             char(10)             null,
+      db_id                     char(9)              not null
+);
+
+
+# BO - Buildout
+CREATE TABLE IF NOT EXISTS PUBACC_BO
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      call_sign                 char(10)             null,
+      buildout_code             integer              null,
+      buildout_deadline         char(10)             null,
+      buildout_date             char(10)             null,
+      db_id                     char(9)              not null
+);
+
+
+# CF - Callsign/Filenumber
+CREATE TABLE IF NOT EXISTS PUBACC_CF
+(
+      Record_Type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      ULS_File_Number           char(14)             null,
+      EBF_Number                varchar(30)          null,
+      Item_Type_Indicator       char(1)              null,
+      Item_Type                 char(14)             null,
+      Constructed               char(1)              null,
+      Location_Number           integer              null,
+      Path_Number               integer              null,
+      Frequency_Assigned        numeric(16,8)        null,
+      Frequency_Upper_Band      numeric(16,8)        null,
+      number_of_mobiles         integer              null,
+      action_performed          char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+# CG - Coast and Ground
+CREATE TABLE IF NOT EXISTS PUBACC_CG
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      station_available         char(1)              null,
+      public_correspondence     char(1)              null,
+      station_identifier        char(12)             null,
+      aeronautical_enroute_call_sign char(10)        null,
+      faa_office_notified       varchar(255)         null,
+      date_faa_notified         char(10)             null,
+      seeking_authorization     char(1)              null,
+      regularly_engaged         char(1)              null,
+      engaged                   char(1)              null,
+      public_mooring            char(1)              null,
+      servicing                 char(1)              null,
+      fixed_station             char(1)              null,
+      maritime_support          char(1)              null,
+      aeronautical_fixed        char(1)              null,
+      unicom                    char(1)              null,
+      search_and_rescue         char(1)              null,
+      flight_test_uhf           char(1)              null,
+      flight_test_manufacturer  char(1)              null,
+      flight_test_parent_corporation char(1)         null,
+      flight_test_educational   char(1)              null,
+      flight_school_certitication char(1)            null,
+      lighter_than_air          char(1)              null,
+      ballooning                char(1)              null,
+      located_at_airport        char(1)              null,
+      radiodetermination_not_faa char(1)             null,
+      radiodetermination_equipment char(1)           null,
+      radiodetermination_public char(1)              null,
+      radiodetermination_elts   char(1)              null,
+      civil_air_patrol          char(1)              null,
+      aeronautical_enroute      char(1)              null,
+      mobile_routine            char(1)              null,
+      mobile_owner_operator     char(1)              null,
+      mobile_agreement          char(1)              null,
+      coast_ground_identifier   char(12)             null,
+      selective_call_sign_identifier char(4)         null,
+      station_class             char(4)              null,
+      db_id                     char(9)              not null
+);
+
+
+# CO - Comments
+CREATE TABLE IF NOT EXISTS PUBACC_CO
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_num              char(14)             null,
+      callsign                  char(10)             null,
+      date                      char(10)             null,
+      description               varchar(255)         null,
+      db_id                     char(9)              not null
+);
+
+
+# CP - Control Point
+CREATE TABLE IF NOT EXISTS PUBACC_CP
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      control_point_action_performed char(1)         null,
+      control_point_number      integer              null,
+      control_address           varchar(80)          null,
+      control_city              char(20)             null,
+      state_code                char(2)              null,
+      control_phone             char(10)             null,
+      control_county            varchar(60)          null,
+      status_code               char(1)              null,
+      status_date               char(10)             null,
+      db_id                     char(9)              not null
+);
+
+
+# CS - COSER
+CREATE TABLE IF NOT EXISTS PUBACC_CS
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      call_sign                 char(10)             null,
+      location_number           integer              null,
+      antenna_number            integer              null,
+      frequency_assigned        numeric(16,8)        null,
+      coser_result              char(5)              null,
+      db_id                     char(9)              not null
+);
+
+
+# EM - Emission
+CREATE TABLE IF NOT EXISTS PUBACC_EM
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      location_number           integer              null,
+      antenna_number            integer              null,
+      frequency_assigned        numeric(16,8)        null,
+      emission_action_performed char(1)              null,
+      emission_code             char(10)             null,
+      digital_mod_rate          numeric(8,1)         null,
+      digital_mod_type          char(7)              null,
+      frequency_number          integer              null,
+      db_id                     char(9)              not null
+);
+
+
+# EN - Entity
+CREATE TABLE IF NOT EXISTS PUBACC_EN
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      entity_type               char(2)              null,
+      licensee_id               char(9)              null,
+      entity_name               varchar(200)         null,
+      first_name                varchar(20)          null,
+      mi                        char(1)              null,
+      last_name                 varchar(20)          null,
+      suffix                    char(3)              null,
+      phone                     char(10)             null,
+      fax                       char(10)             null,
+      email                     varchar(50)          null,
+      street_address            varchar(60)          null,
+      city                      varchar(20)          null,
+      state                     char(2)              null,
+      zip_code                  char(9)              null,
+      po_box                    varchar(20)          null,
+      attention_line            varchar(35)          null,
+      sgin                      char(3)              null,
+      frn                       char(10)             null,
+      applicant_type_code       char(1)              null,
+      applicant_type_code_other char(40)             null,
+      status_code               char(1)              null,
+      status_date               char(10)             null,
+      db_id                     char(9)              not null
+);
+
+
+# F2 - Additional Frequency Information
+CREATE TABLE IF NOT EXISTS PUBACC_F2
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      location_number           integer              null,
+      antenna_number            integer              null,
+      frequency_number          integer              null,
+      frequency_assigned        numeric(16,8)        null,
+      frequency_upper_band      numeric(16,8)        null,
+      offset                    char(3)              null,
+      frequency_channel_block   char(4)              null,
+      equipment_class	          char(2)              null, 
+      minimum_power_output	    numeric(15,3)        null,
+      db_id                     char(9)              not null
+);
+
+
+# FA - FRC Administration
+CREATE TABLE IF NOT EXISTS PUBACC_FA
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      operator_class            char(2)              null,
+      ship_radar_endorsement    char(1)              null,
+      six_month_endorsement     char(1)              null,
+      date_of_birth             char(10)             null,
+      certification_not_restricted char(1)           null,
+      cert_restricted_permit    char(1)              null,
+      restricted_permit_limited_use char(1)          null,
+      cole_manager_code         char(5)              null,
+      dm_call_sign              char(10)             null,
+      proof_of_passing          char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+# FC - Frequency Coordination
+CREATE TABLE IF NOT EXISTS PUBACC_FC
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      coordination_number       char(25)             null,
+      coordinator_name          varchar(40)          null,
+      coordinator_phone         char(10)             null,
+      freq_coordination_date    char(10)             null,
+      action_performed          char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+# FF - Frequency Free Form (Special Condition)
+CREATE TABLE IF NOT EXISTS PUBACC_FF
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         null,
+      callsign                  char(10)             null,
+      location_number           integer              null,
+      antenna_number            integer              null,
+      frequency                 numeric(16,8)        null,
+      frequency_number          integer              null,
+      freq_freeform_cond_type   char(1)              null,
+      unique_freq_freeform_id   numeric(9,0)         null,
+      sequence_number           integer              null,
+      freq_freeform_condition   varchar(255)         null,
+      db_id                     char(9)              not null
+);
+ 
+
+# FR - Frequency
+CREATE TABLE IF NOT EXISTS PUBACC_FR
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      frequency_action_performed char(1)             null,
+      location_number           integer              null,
+      antenna_number            integer              null,
+      class_station_code        char(4)              null,
+      op_altitude_code          char(2)              null,
+      frequency_assigned        numeric(16,8)        null,
+      frequency_upper_band      numeric(16,8)        null,
+      frequency_carrier         numeric(16,8)        null,
+      time_begin_operations     integer              null,
+      time_end_operations       integer              null,
+      power_output              numeric(15,3)        null,
+      power_erp                 numeric(15,3)        null,
+      tolerance                 numeric(6,5)         null,
+      frequency_ind             char(1)              null,
+      status                    char(1)              null,
+      eirp                      numeric(7,1)         null,
+      transmitter_make          varchar(25)          null,
+      transmitter_model         varchar(25)          null,
+      auto_transmitter_power_control char(1)         null,
+      cnt_mobile_units          integer              null,
+      cnt_mob_pagers            integer              null,
+      freq_seq_id               integer              null,
+      status_date               char(10)             null,
+      status_code               char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+# FS - Frequency (Special Condition)
+CREATE TABLE IF NOT EXISTS PUBACC_FS
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      call_sign                 char(10)             null,
+      location_number           integer              null,
+      antenna_number            integer              null,
+      frequency                 numeric(16,8)        null,
+      frequency_number          integer              null,
+      special_condition_type    char(1)              null,
+      special_condition_code    integer              null,
+      db_id                     char(9)              not null
+);
+
+
+# FT - Frequency Type
+CREATE TABLE IF NOT EXISTS PUBACC_FT
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      freq_type_action_performed char(1)             null,
+      location_number           integer              null,
+      antenna_number            integer              null,
+      frequency_assigned        numeric(16,8)        null,
+      frequency_type_number     integer              null,
+      frequency_type_code       char(2)              null,
+      db_id                     char(9)              not null
+);
+
+
+# HD - Application/Header
+CREATE TABLE IF NOT EXISTS PUBACC_HD
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      license_status            char(1)              null,
+      radio_service_code        char(2)              null,
+      grant_date                char(10)             null,
+#      grant_date                date                 null,
+      expired_date              char(10)             null,
+      cancellation_date         char(10)             null,
+      eligibility_rule_num      char(10)             null,
+      reserved1                 char(1)              null,
+      alien                     char(1)              null,
+      alien_government          char(1)              null,
+      alien_corporation         char(1)              null,
+      alien_officer             char(1)              null,
+      alien_control             char(1)              null,
+      revoked                   char(1)              null,
+      convicted                 char(1)              null,
+      adjudged                  char(1)              null,
+      reserved2                 char(1)              null,
+      common_carrier            char(1)              null,
+      non_common_carrier        char(1)              null,
+      private_comm              char(1)              null,
+      fixed                     char(1)              null,
+      mobile                    char(1)              null,
+      radiolocation             char(1)              null,
+      satellite                 char(1)              null,
+      developmental_or_sta      char(1)              null,
+      interconnected_service    char(1)              null,
+      certifier_first_name      varchar(20)          null,
+      certifier_mi              char(1)              null,
+      certifier_last_name       varchar(20)          null,
+      certifier_suffix          char(3)              null,
+      certifier_title           char(40)             null,
+      female                    char(1)              null,
+      african_american          char(1)              null,
+      native_american           char(1)              null,
+      hawaiian                  char(1)              null,
+      asian                     char(1)              null,
+      white                     char(1)              null,
+      hispanic                  char(1)              null,
+      effective_date            char(10)             null,
+      last_action_date          char(10)             null,
+      auction_id                integer              null,
+      reg_stat_broad_serv       char(1)              null,
+      band_manager              char(1)              null,
+      type_serv_broad_serv      char(1)              null,
+      alien_ruling              char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+# HS - History
+CREATE TABLE IF NOT EXISTS PUBACC_HS
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      callsign                  char(10)             null,
+      date                      char(10)             null,
+      code                      char(6)              null,
+      db_id                     char(9)              not null
+);
+
+
+# IA - International Address
+CREATE TABLE IF NOT EXISTS PUBACC_IA
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      international_address_1   varchar(60)          null,
+      international_address_2   varchar(60)          null,
+      international_city        varchar(30)          null,
+      country                   varchar(20)          null,
+      international_zip_code    varchar(20)          null,
+      international_phone       char(20)             null,
+      international_fax         char(20)             null,
+      db_id                     char(9)              not null
+);
+
+
+# IR - IRAC
+CREATE TABLE IF NOT EXISTS PUBACC_IR
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      call_sign                 char(10)             null,
+      location_number           integer              null,
+      antenna_number            integer              null,
+      frequency_assigned        numeric(16,8)        null,
+      irac_result               char(2)              null,
+      db_id                     char(9)              not null
+);
+
+
+# L2 - License (Additional Data)
+CREATE TABLE IF NOT EXISTS PUBACC_L2
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      location_action_performed	char(1)              null,
+      location_number           integer              null,
+      registration_required     char(1)              null,
+      protection_date           datetime             null,
+      db_id                     char(9)              not null
+);
+
+
+# LA - License Attachment
+CREATE TABLE IF NOT EXISTS PUBACC_LA
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         null,
+      callsign                  char(10)             null,
+      attachment_code           char(1)              null,
+      attachment_desc           varchar(60)          null,
+      attachment_date           char(10)             null,
+      attachment_filename       varchar(60)          null,
+      action_performed          char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+# LF - Location Free Form (Special Condition)
+CREATE TABLE IF NOT EXISTS PUBACC_LF
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         null,
+      callsign                  char(10)             null,
+      location_number           integer              null,
+      loc_freeform_cond_type    char(1)              null,
+      unique_loc_freeform_id    numeric(9,0)         null,
+      sequence_number           integer              null,
+      loc_freeform_condition    varchar(255)         null,
+      db_id                     char(9)              not null
+);
+
+
+# LM - License Mobile Administration
+CREATE TABLE IF NOT EXISTS PUBACC_LM
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      callsign                  char(10)             null,
+      ext_implement_appr        char(1)              null,
+      lm_eligibility_activity   varchar(255)         null,
+      status_code               char(1)              null,
+      status_date               char(10)             null,
+      db_id                     char(9)              not null
+);
+
+
+# LO - Location
+CREATE TABLE IF NOT EXISTS PUBACC_LO
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      location_action_performed char(1)              null,
+      location_type_code        char(1)              null,
+      location_class_code       char(1)              null,
+      location_number           integer              null,
+      site_status               char(1)              null,
+      corresponding_fixed_location integer           null,
+      location_address          varchar(80)          null,
+      location_city             char(20)             null,
+      location_county           varchar(60)          null,
+      location_state            char(2)              null,
+      radius_of_operation       numeric(5,1)         null,
+      area_of_operation_code    char(1)              null,
+      clearance_indicator       char(1)              null,
+      ground_elevation          numeric(7,1)         null,
+      lat_degrees               integer              null,
+      lat_minutes               integer              null,
+      lat_seconds               numeric(3,1)         null,
+      lat_direction             char(1)              null,
+      long_degrees              integer              null,
+      long_minutes              integer              null,
+      long_seconds              numeric(3,1)         null,
+      long_direction            char(1)              null,
+      max_lat_degrees           integer              null,
+      max_lat_minutes           integer              null,
+      max_lat_seconds           numeric(3,1)         null,
+      max_lat_direction         char(1)              null,
+      max_long_degrees          integer              null,
+      max_long_minutes          integer              null,
+      max_long_seconds          numeric(3,1)         null,
+      max_long_direction        char(1)              null,
+      nepa                      char(1)              null,
+      quiet_zone_notification_date char(10)          null,
+      tower_registration_number char(10)             null,
+      height_of_support_structure numeric(7,1)       null,
+      overall_height_of_structure numeric(7,1)       null,
+      structure_type            char(6)              null,
+      airport_id                char(4)              null,
+      location_name             char(20)             null,
+      units_hand_held           integer              null,
+      units_mobile              integer              null,
+      units_temp_fixed          integer              null,
+      units_aircraft            integer              null,
+      units_itinerant           integer              null,
+      status_date               char(10)             null,
+      status_code               char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+# LS - Location (Special Condition)
+CREATE TABLE IF NOT EXISTS PUBACC_LS
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      call_sign                 char(10)             null,
+      location_number           integer              null,
+      special_condition_type    char(1)              null,
+      special_condition_code    integer              null,
+      db_id                     char(9)              not null
+);
+
+
+# MC - Market Coordinate
+CREATE TABLE IF NOT EXISTS PUBACC_MC
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      undefined_partitioned_area integer             null,
+      partition_sequence_number integer              null,
+      partition_lat_degrees     integer              null,
+      partition_lat_minutes     integer              null,
+      partition_lat_seconds     numeric(3,1)         null,
+      partition_lat_direction   char(1)              null,
+      partition_long_degrees    integer              null,
+      partition_long_minutes    integer              null,
+      partition_long_seconds    numeric(3,1)         null,
+      partition_long_direction  char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+# MF - Market Frequency
+CREATE TABLE IF NOT EXISTS PUBACC_MF
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      defined_partition_area    char(6)              null,
+      lower_frequency           numeric(16,8)        null,
+      upper_frequency           numeric(16,8)        null,
+      db_id                     char(9)              not null
+);
+
+
+# MI - MDS/ITFS Administration
+CREATE TABLE IF NOT EXISTS PUBACC_MI
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      facility_type_code        char(4)              null,
+      statement_of_intention    char(1)              null,
+      license_type_code         char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+# MK - Market
+CREATE TABLE IF NOT EXISTS PUBACC_MK
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      market_code               char(6)              null,
+      channel_block             char(4)              null,
+      submarket_code            integer              null,
+      market_name               char(30)             null,
+      coverage_partitioning     char(1)              null,
+      coverage_dissagregation   char(1)              null,
+      cellular_phase_id         smallint             null,
+      population                numeric(9,0)         null,
+      tribal_credit_indicator   char(1)              null,
+      tribal_credit_calculation numeric(20,4)        null,
+      additional_credit_requested numeric(20,4)      null,
+      tribal_credit_awarded     numeric(20,4)        null,
+      additiona_credit_awarded  numeric(20,4)        null,
+      db_id                     char(9)              not null
+);
+
+
+# MP - Market Partition
+CREATE TABLE IF NOT EXISTS PUBACC_MP
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      market_partition_code     char(6)              null,
+      defined_partition_area    varchar(60)          null,
+      defined_area_population   numeric(9,0)         null,
+      include_exclude_ind       char(1)              null,
+      undefined_partitioned_area integer             null,
+      db_id                     char(9)              not null
+);
+
+
+# MW - Microwave
+CREATE TABLE IF NOT EXISTS PUBACC_MW
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      pack_indicator            char(1)              null,
+      pack_registration_num     integer              null,
+      pack_name                 varchar(50)          null,
+      type_of_operation         varchar(45)          null,
+      smsa_code                 char(6)              null,
+      station_class             char(4)              null,
+      cum_effect_is_major       char(1)              null,
+      status_code               char(1)              null,
+      status_date               char(10)             null,
+      db_id                     char(9)              not null
+);
+
+
+# OP - Area of Operation Text
+CREATE TABLE IF NOT EXISTS PUBACC_OP
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      callsign                  char(10)             null,
+      location_number           integer              null,
+      area_text_sequence_num    integer              null,
+      area_of_operation         varchar(255)         null,
+      db_id                     char(9)              not null
+);
+
+
+# PA - Microwave Path
+CREATE TABLE IF NOT EXISTS PUBACC_PA
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      callsign                  char(10)             null,
+      path_action_performed     char(1)              null,
+      path_number               integer              null,
+      transmit_location_number  integer              null,
+      transmit_antenna_number   integer              null,
+      receiver_location_number  integer              null,
+      receiver_antenna_number   integer              null,
+      mas_dems_subtype          char(2)              null,
+      path_type_desc            char(20)             null,
+      passive_receiver_indicator char(1)             null,
+      country_code              char(3)              null,
+      interference_to_gso       char(1)              null,
+      receiver_callsign         varchar(10)          null,
+      db_id                     char(9)              not null
+);
+
+
+# PC - Points of Communication
+CREATE TABLE IF NOT EXISTS PUBACC_PC
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      action_performed          char(1)              null,
+      location_number           integer              null,
+      antenna_number            integer              null,
+      frequency                 numeric(16,8)        null,
+      subscriber_call_sign      char(10)             null,
+      city                      varchar(20)          null,
+      state                     char(2)              null,
+      lat_degrees               integer              null,
+      lat_minutes               integer              null,
+      lat_seconds               numeric(3,1)         null,
+      lat_direction             char(1)              null,
+      long_degrees              integer              null,
+      long_minutes              integer              null,
+      long_seconds              numeric(3,1)         null,
+      long_direction            char(1)              null,
+      point_of_com_frequency    numeric(16,8)        null,
+      db_id                     char(9)              not null
+);
+
+
+# RA - Radial
+CREATE TABLE IF NOT EXISTS PUBACC_RA
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      radial_action_performed   char(1)              null,
+      location_number           integer              null,
+      antenna_number            integer              null,
+      frequency                 numeric(16,8)        null,
+      radial_direction          numeric(3,0)         null,
+      radial_haat               numeric(5,1)         null,
+      radial_erp                numeric(7,3)         null,
+      dist_to_sab               numeric(4,1)         null,
+      dist_to_cgsa              numeric(4,1)         null,
+      db_id                     char(9)              not null
+);
+
+
+# RC - Receiver
+CREATE TABLE PUBACC_RC
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      radial_action_performed   char(1)              null,
+      location_number           integer              null,
+      antenna_number            integer              null,
+      receiver_make             varchar(25)          null,
+      receiver_model            varchar(25)          null,
+      receiver_stability        numeric(6,5)         null,
+      receiver_noise_figure     numeric(5,2)         null,
+      db_id                     char(9)              not null
+);
+
+
+# RE - Reason
+CREATE TABLE IF NOT EXISTS PUBACC_RE
+(
+      Record_Type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         not null,
+      ULS_File_Number           char(14)             null,
+      EBF_Number                varchar(30)          null,
+      Reason                    varchar(255)         null,
+      db_id                     char(9)              not null
+);
+
+
+# RZ - Receive Zone
+CREATE TABLE IF NOT EXISTS PUBACC_RZ
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      antenna_action_performed  char(1)              null,
+      location_number           integer              null,
+      antenna_number            integer              null,
+      receive_zone_number       integer              null,
+      receive_zone              char(6)              null,
+      db_id                     char(9)              not null
+);
+
+
+# SC - Special Condition
+CREATE TABLE IF NOT EXISTS PUBACC_SC
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      call_sign                 char(10)             null,
+      special_condition_type    char(1)              null,
+      special_condition_code    integer              null,
+      db_id                     char(9)              not null
+);
+
+
+# SE - Ship Exemption
+CREATE TABLE IF NOT EXISTS PUBACC_SE
+(
+      record_type              char(2)               null,
+      unique_system_identifier numeric(9,0)          null,
+      uls_file_number          char(14)              null,
+      ebf_number               varchar(30)           null,
+      call_sign                char(10)              null,
+      ship_call_sign           char(10)              null,
+      port_registry            varchar(35)           null,
+      owner                    char(1)               null,
+      operater                 char(1)               null,
+      charter                  char(1)               null,
+      agent                    char(1)               null,
+      radiotelephone_exempt_req char(1)              null,
+      gmdss_exemp_req          char(1)               null,
+      radio_dir_exempt_req     char(1)               null,
+      prev_exempt_file_number  varchar(10)           null,
+      foreign_port             char(1)               null,
+      vessel_size_exempt       char(1)               null,
+      equipment_exempt         char(1)               null,
+      ltd_routes_exempt        char(1)               null,
+      cond_voyages_exempt      char(1)               null,
+      other_exempt             char(1)               null,
+      other_exempt_desc        varchar(50)           null,
+      ship_type                char(1)               null,
+      number_of_crew           integer               null,
+      number_passengers        integer               null,
+      number_others            integer               null,
+      count_vhf                integer               null,
+      count_vhf_dsc            char(1)               null,
+      count_epirb              integer               null,
+      count_survival           integer               null,
+      count_earth_station      integer               null,
+      count_auto_alarm         integer               null,
+      count_single_side_band   integer               null,
+      single_side_band_type_mf char(1)               null,
+      single_side_band_type_hf char(1)               null,
+      single_side_band_type_dsc char(1)              null,
+      count_of_navtex          integer               null,
+      count_of_9_ghz_radar     integer               null,
+      count_of_500_khz_distress integer              null,
+      count_of_reserve_power   integer               null,
+      count_of_other           integer               null,
+      description_of_other     varchar(50)           null,
+      db_id                    char(9)               not null
+);
+
+
+# SF - License Free Form (Special Condition)
+CREATE TABLE IF NOT EXISTS PUBACC_SF
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         null,
+      callsign                  char(10)             null,
+      lic_freeform_cond_type    char(1)              null,
+      unique_lic_freeform_id    numeric(9,0)         null,
+      sequence_number           integer              null,
+      lic_freeform_condition    varchar(255)         null,
+      db_id                     char(9)              not null
+);
+ 
+
+# SG - Microwave Segments
+CREATE TABLE IF NOT EXISTS PUBACC_SG
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      segment_action_performed  char(1)              null,
+      path_number               integer              null,
+      transmit_location         integer              null,
+      transmit_antenna          integer              null,
+      receiver_location         integer              null,
+      receiver_antenna          integer              null,
+      segment_number            integer              null,
+      segment_length            numeric(12,6)        null,
+      db_id                     char(9)              not null
+);
+
+
+# SH - Ship
+CREATE TABLE IF NOT EXISTS PUBACC_SH
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      callsign                  char(10)             null,
+      type_of_authorization     char(1)              null,
+      count_in_fleet            integer              null,
+      general_class             char(3)              null,
+      special_class             char(3)              null,
+      ship_name                 varchar(35)          null,
+      ship_number               char(12)             null,
+      international_voyages     char(1)              null,
+      foreign_communications    char(1)              null,
+      radiotelegraph            char(1)              null,
+      mmsi_request              char(1)              null,
+      gross_tonnage             integer              null,
+      ship_length               integer              null,
+      working_freq_s1           char(3)              null,
+      working_freq_s2           char(3)              null,
+      self_id_number            char(5)              null,
+      comsat_id_number          char(7)              null,
+      station_number            numeric(9,0)         null,
+      required_cat_a            char(1)              null,
+      required_cat_b            char(1)              null,
+      required_cat_c            char(1)              null,
+      required_cat_d            char(1)              null,
+      required_cat_e            char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+# SI - SIDS
+CREATE TABLE IF NOT EXISTS PUBACC_SI
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      sid                       char(4)              null,
+      action_performed          char(1)              null,
+      db_id                     char(9)              not null
+);
+
+
+# SV - Ship Voyage
+CREATE TABLE IF NOT EXISTS PUBACC_SV
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      voyage_number             integer              null,
+      voyage_description        varchar(255)         null,
+      db_id                     char(9)              not null
+);
+
+
+# TA - Transfer/Assign
+CREATE TABLE IF NOT EXISTS PUBACC_TA
+(
+      Record_Type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      pro_forma                 char(1)              null,
+      full_assignment           char(1)              null,
+      method_of_accomplishment  char(1)              null,
+      method_other_description  varchar(30)          null,
+      voluntary_involuntary     char(1)              null,
+      assignor_certifier_first_name varchar(20)      null,
+      assignor_certifier_mi     varchar(1)           null,
+      assignor_certifier_last_name char(20)          null,
+      assignor_certifier_suffix varchar(3)           null,
+      assignor_certifier_title  varchar(40)          null,
+      gross_revenue_year_1      numeric(20,4)        null,
+      gross_revenue_year_2      numeric(20,4)        null,
+      gross_revenue_year_3      numeric(20,4)        null,
+      total_assets              numeric(20,4)        null,
+      same_small_category       char(1)              null,
+      applying_for_installments char(1)              null,
+      notification_of_forebearance char(1)           null,
+      wireless_need_approval    char(1)              null,
+      non_wireless_need_approval char(1)             null,
+      male_or_female            char(1)              null,
+      african_american          char(1)              null,
+      native_american           char(1)              null,
+      native_pacific_islander   char(1)              null,
+      asian                     char(1)              null,
+      white                     char(1)              null,
+      ethnicity                 char(1)              null,
+      consent_date              char(10)             null,
+      consummation_date         char(10)             null,
+      consummation_deadline     char(10)             null,
+      eligibility_category      varchar(30)          null,
+      db_id                     char(9)              not null
+);
+
+
+# TL - Tribal Land
+CREATE TABLE IF NOT EXISTS PUBACC_TL
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      market_code               char(6)              null,
+      channel_block             char(4)              null,
+      action_performed          char(1)              null,
+      tribal_land_name          varchar(80)          null,
+      tribal_certification      char(1)              null,
+      tribal_land_type          varchar(10)          null,
+      square_kilometers         numeric(8,0)         null,
+      db_id                     char(9)              not null
+);
+
+
+# UA - Cellular Unserved Area
+CREATE TABLE IF NOT EXISTS PUBACC_UA
+(
+      record_type               char(2)              not null,
+      unique_system_identifier  numeric(9,0)         null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      call_sign                 char(10)             null,
+      action_performed          char(1)              null,
+      cellular_phase            integer              null,
+      market_code               char(6)              null,
+      submarket_code            integer              null,
+      channel_block             char(4)              null,
+      db_id                     char(9)              not null
+);
+
+
+# VC - Vanity Callsign
+CREATE TABLE IF NOT EXISTS PUBACC_VC
+(
+      record_type               char(2)              null,
+      unique_system_identifier  numeric(9,0)         not null,
+      uls_file_number           char(14)             null,
+      ebf_number                varchar(30)          null,
+      request_sequence          integer              null,
+      callsign_requested        char(10)             null,
+      db_id                     char(9)              not null
+);
+
