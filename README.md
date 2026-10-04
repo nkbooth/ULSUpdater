@@ -1,3 +1,5 @@
+> **Moved to Codeberg:** https://codeberg.org/alatartheblue/ULSUpdater — this GitHub copy is archived and no longer updated.
+
 # Implements a PHP parser of the ULS daily and weekly public access files
 Original scope and spec as per n6lhv (http://www.n6lhv.net/uls/) and Matt KC0UDT.  Updated to new ULS specifications and improved by Nick N1CCK.
 
